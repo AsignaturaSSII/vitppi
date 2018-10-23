@@ -1,14 +1,17 @@
+# -*- coding: utf-8 -*-
 # Python program to implement client side of chat room. 
 import socket 
 import select 
 import sys 
+from operaciones import * #Importamos el módulo operaciones
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
-if len(sys.argv) != 3: 
-	print "Correct usage: script, IP address, port number"
+if len(sys.argv) != 4: 
+	print "[ERROR] La sintáxis escrita es incorrecta. Pruebe con: 'python ip.value port.value key.value'"
 	exit() 
 IP_address = str(sys.argv[1]) 
 Port = int(sys.argv[2]) 
+Key = sys.argv[3]
 server.connect((IP_address, Port)) 
 
 while True: 
@@ -28,10 +31,22 @@ while True:
 
 	for socks in read_sockets: 
 		if socks == server: 
+			##Del servidor nunca se van a recibir datos realmente. No sé si es buena idea dejarlo así o poner otra cosa.
+			##ya que también tenemos que tener en cuenta que puede llegar algún mensaje del Servidor y por tanto, debemos
+			##lanzar una excepción
 			message = socks.recv(2048) 
 			print message 
 		else: 
 			message = sys.stdin.readline() 
+			##Aquí debemos meter la función getMac(mensaje, key)
+			mac = getMac(message, Key)
+			print "El mac es: "+mac
+
+			unir = unirOSepararMacYMensaje(message, mac, True)
+			print "La unión del mac y el mensaje es: "+unir[0]
+
+			##Unimos el mensaje y el mac en un mismo texto con un carácter especial, ':'
+			#res_ret = mensaje + ":" + mac
 			server.send(message) 
 			sys.stdout.write("<You>") 
 			sys.stdout.write(message) 

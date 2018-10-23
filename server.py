@@ -1,8 +1,10 @@
+# -*- coding: utf-8 -*-
 # Python program to implement server side of chat room. 
 import socket 
 import select 
 import sys 
 from thread import *
+from operaciones import * #Importamos el módulo operaciones
 
 """The first argument AF_INET is the address domain of the 
 socket. This is used when we have an Internet Domain with 
@@ -13,8 +15,8 @@ server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) 
 
 # checks whether sufficient arguments have been provided 
-if len(sys.argv) != 3: 
-	print "Correct usage: script, IP address, port number"
+if len(sys.argv) != 4: 
+	print "[ERROR] La sintáxis escrita es incorrecta. Pruebe con: 'python ip.value port.value key.value'"
 	exit() 
 
 # takes the first argument from command prompt as IP address 
@@ -22,6 +24,8 @@ IP_address = str(sys.argv[1])
 
 # takes second argument from command prompt as port number 
 Port = int(sys.argv[2]) 
+
+Key = sys.argv[3]
 
 """ 
 binds the server to an entered IP address and at the 
@@ -45,7 +49,18 @@ def clientthread(conn, addr):
 
 	while True: 
 			try: 
-				message = conn.recv(2048) 
+				message = conn.recv(2048)
+				##Aquí debemos partir el mensaje y el mac de tal forma que podamos comprobar todo.
+				separar = unirOSepararMacYMensaje(message,"",False)
+				##Obtenemos la mac del mensaje
+				mac = getMac(separar[0],Key)
+				##Comparamos la mac
+				##Damos el veredicto
+				if(mac == separar[1]):
+					print "Las macs son iguales"
+				else:
+					print "Las macs son diferentes"
+					
 				if message: 
 
 					"""prints the message and address of the 
