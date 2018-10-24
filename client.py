@@ -47,7 +47,7 @@ while True:
 
 			##Unimos el mensaje y el mac en un mismo texto con un carácter especial, ':'
 			#res_ret = mensaje + ":" + mac
-			server.send(message) 
+			server.send(unir[0]) 
 			sys.stdout.write("<You>") 
 			sys.stdout.write(message) 
 			sys.stdout.flush() 

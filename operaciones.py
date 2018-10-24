@@ -16,8 +16,8 @@ def getMac(mensaje, key):
     return mac
 
 def getNonce():
-
-    return null
+    ret_res = false
+    return ret
 
 def compareMac(mac1, mac2):
     return mac1 == mac2
