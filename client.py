@@ -13,6 +13,7 @@ IP_address = str(sys.argv[1])
 Port = int(sys.argv[2]) 
 Key = sys.argv[3]
 server.connect((IP_address, Port)) 
+nonce_aux = ""
 
 while True: 
 
@@ -35,16 +36,23 @@ while True:
 			##ya que también tenemos que tener en cuenta que puede llegar algún mensaje del Servidor y por tanto, debemos
 			##lanzar una excepción
 			message = socks.recv(2048) 
-			print message 
+			print message.split("-")[0] 
+			nonce_aux = message.split("-")[1]
+			print "nonce => ",nonce_aux
 		else: 
 			message = sys.stdin.readline() 
+			message_aux = message+":"+nonce_aux
+			##GET al NONCE:
+			#server.send(peticion) 
+			#nonce = socks.recv(2048)
+			#print "Nonce => ",nonce
 			##Aquí debemos meter la función getMac(mensaje, key)
-			mac = getMac(message, Key)
+			mac = getMac(message_aux, Key)
 			print "El mac es: "+mac
-
-			unir = unirOSepararMacYMensaje(message, mac, True)
-			print "La unión del mac y el mensaje es: "+unir[0]
-
+			unir = unirOSepararMacYMensaje(message, mac, nonce_aux, True)
+			print "La unión del mac, el mensaje y el nonce es: "+unir[0]
+			##nonce = getNonce()
+			##print "getNonce() => ",nonce
 			##Unimos el mensaje y el mac en un mismo texto con un carácter especial, ':'
 			#res_ret = mensaje + ":" + mac
 			server.send(unir[0]) 

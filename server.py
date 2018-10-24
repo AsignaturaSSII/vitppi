@@ -42,16 +42,27 @@ server.listen(100)
 
 list_of_clients = [] 
 
+list_nonce = {}
+
 def clientthread(conn, addr): 
 
-	# sends a message to the client whose user object is conn 
-	conn.send("Welcome to this chatroom!") 
+	# sends a message to the client whose user object is conn
+	nonce = getNonce() 
+	list_nonce[addr[0]] = [nonce]
+	print "Mostramos la lista => ",list_nonce
+	bienvenida = "Welcome to this chatroom!-"+str(nonce)
+	print "mensaje de bienvenida => ",bienvenida
+	conn.send(bienvenida) 
 
 	while True: 
 			try: 
 				message = conn.recv(2048)
 				##Aquí debemos partir el mensaje y el mac de tal forma que podamos comprobar todo.
-				separar = unirOSepararMacYMensaje(message,"",False)
+				separar = unirOSepararMacYMensaje(message,"","",False)
+				if separar[2] == list_nonce[addr[0]]:
+					print "El nonce es correcto"
+				else: 
+					print "El nonce es incorrecto"
 				##Obtenemos la mac del mensaje
 				mac = getMac(separar[0],Key)
 				##Comparamos la mac
@@ -62,15 +73,19 @@ def clientthread(conn, addr):
 					print "Las macs son diferentes"
 					
 				if message: 
+					if message == "GET NONCE":
+						nonce = "nonce:",getNonce()
+						conn.send(nonce)
+						 
+					else:
+						"""prints the message and address of the 
+						user who just sent the message on the server 
+						terminal"""
+						print "<" + addr[0] + "> " + message 
 
-					"""prints the message and address of the 
-					user who just sent the message on the server 
-					terminal"""
-					print "<" + addr[0] + "> " + message 
-
-					# Calls broadcast function to send message to all 
-					message_to_send = "<" + addr[0] + "> " + message 
-					broadcast(message_to_send, conn) 
+						# Calls broadcast function to send message to all 
+						message_to_send = "<" + addr[0] + "> " + message 
+						broadcast(message_to_send, conn) 
 
 				else: 
 					"""message may have no content if the connection 
