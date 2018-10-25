@@ -3,14 +3,18 @@
 from Crypto.Cipher import DES
 import time
 import random
+import hmac
 
 def getMac(mensaje, key):
 
     ##Pasamos la clave:
-    cipher = DES.new(key)
+    hmac_new = hmac.new(key)
+    ##cipher = DES.new(key)
 
     ##Una vez con la clave, ciframos el mensaje:
-    mac = cipher.encrypt(mensaje)
+    hmac_new.update(mensaje)
+    mac = hmac_new.hexdigest()
+    ##mac = cipher.encrypt(mensaje)
 
     ##Unimos mensaje + mac: 
     #res_ret = mensaje + ":" + mac
