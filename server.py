@@ -48,7 +48,7 @@ def clientthread(conn, addr):
 
 	# sends a message to the client whose user object is conn
 	nonce = getNonce() 
-	list_nonce[addr[0]] = [nonce]
+	list_nonce[addr[0]] = nonce
 	print "Mostramos la lista => ",list_nonce
 	bienvenida = "Welcome to this chatroom!-"+str(nonce)
 	print "mensaje de bienvenida => ",bienvenida
@@ -59,12 +59,16 @@ def clientthread(conn, addr):
 				message = conn.recv(2048)
 				##Aquí debemos partir el mensaje y el mac de tal forma que podamos comprobar todo.
 				separar = unirOSepararMacYMensaje(message,"","",False)
-				if separar[2] == list_nonce[addr[0]]:
+				if int(separar[2]) == int(list_nonce.get(addr[0])):
 					print "El nonce es correcto"
 				else: 
 					print "El nonce es incorrecto"
 				##Obtenemos la mac del mensaje
-				mac = getMac(separar[0],Key)
+				mac = getMac(separar[0].strip(" "),Key)
+				print "Mensaje que se cifra => [",separar[0].strip(" "),"]"
+				print "Cifrado con la clave => ",Key
+				print "Mac nueva => ",mac
+				print "Mac de la lista => [",separar[1],"]"
 				##Comparamos la mac
 				##Damos el veredicto
 				if(mac == separar[1]):

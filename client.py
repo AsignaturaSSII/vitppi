@@ -49,6 +49,8 @@ while True:
 			##Aquí debemos meter la función getMac(mensaje, key)
 			mac = getMac(message_aux, Key)
 			print "El mac es: "+mac
+			print "La key es => ",Key
+			print "Mensaje que se cifra => ",message_aux
 			unir = unirOSepararMacYMensaje(message, mac, nonce_aux, True)
 			print "La unión del mac, el mensaje y el nonce es: "+unir[0]
 			##nonce = getNonce()
