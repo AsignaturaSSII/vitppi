@@ -59,43 +59,32 @@ def clientthread(conn, addr):
 				message = conn.recv(2048)
 				##Aquí debemos partir el mensaje y el mac de tal forma que podamos comprobar todo.
 				separar = unirOSepararMacYMensaje(message,"","",False)
+				
+				#Realizamos la comprobación del NONCE
 				if int(separar[2]) == int(list_nonce.get(addr[0])):
 					print "El nonce es correcto"
 				else: 
 					print "El nonce es incorrecto"
+					##CARLOS: Aquí debes tener en cuenta de coger un valor para saber que el nonce no es correcto
+
 				##Obtenemos la mac del mensaje
-				mac = getMac(separar[0].strip(" "),Key)
+				#Con la función strip(" ") lo que hacemos es quitar los espacios de los String.
+				mac = getMac(str(separar[0].strip(" ")),str(Key.strip("")))
 				print "Mensaje que se cifra => [",separar[0].strip(" "),"]"
 				print "Cifrado con la clave => ",Key
 				print "Mac nueva => ",mac
 				print "Mac de la lista => [",separar[1],"]"
+
 				##Comparamos la mac
-				##Damos el veredicto
+				##Damos el veredicto de la mac
 				if(mac == separar[1]):
 					print "Las macs son iguales"
 				else:
 					print "Las macs son diferentes"
-					
-				if message: 
-					if message == "GET NONCE":
-						nonce = "nonce:",getNonce()
-						conn.send(nonce)
-						 
-					else:
-						"""prints the message and address of the 
-						user who just sent the message on the server 
-						terminal"""
-						print "<" + addr[0] + "> " + message 
+					##CARLOS: Aquí ocurre parecido a lo del NONCE
 
-						# Calls broadcast function to send message to all 
-						message_to_send = "<" + addr[0] + "> " + message 
-						broadcast(message_to_send, conn) 
-
-				else: 
-					"""message may have no content if the connection 
-					is broken, in this case we remove the connection"""
-					remove(conn) 
-
+				##Mensajes de despedida:
+				print "La conexión con [",addr[0],"] ha concluido."
 			except: 
 				continue
 

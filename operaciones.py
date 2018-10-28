@@ -4,16 +4,24 @@ from Crypto.Cipher import DES
 import time
 import random
 import hmac
+import hashlib, binascii
 
 def getMac(mensaje, key):
 
     ##Pasamos la clave:
-    hmac_new = hmac.new(key)
+    ##hmac_new = hmac.new("holaa")
     ##cipher = DES.new(key)
 
     ##Una vez con la clave, ciframos el mensaje:
-    hmac_new.update(mensaje)
-    mac = hmac_new.hexdigest()
+    ##hmac_new.update(mensaje)
+    ##mac = hmac_new.digest()
+
+    b = key.encode()
+    print "Key en Bytes => [",b,"]"
+    s = mensaje.encode()
+    print "Mensaje en Bytes => [",s,"]"
+    dk = hashlib.pbkdf2_hmac('sha256', b, s, 100000)
+    return binascii.hexlify(dk)
     ##mac = cipher.encrypt(mensaje)
 
     ##Unimos mensaje + mac: 

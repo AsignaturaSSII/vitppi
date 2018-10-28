@@ -14,6 +14,7 @@ Port = int(sys.argv[2])
 Key = sys.argv[3]
 server.connect((IP_address, Port)) 
 nonce_aux = ""
+mensaje_enviado = False
 
 while True: 
 
@@ -32,34 +33,36 @@ while True:
 
 	for socks in read_sockets: 
 		if socks == server: 
-			##Del servidor nunca se van a recibir datos realmente. No sé si es buena idea dejarlo así o poner otra cosa.
-			##ya que también tenemos que tener en cuenta que puede llegar algún mensaje del Servidor y por tanto, debemos
-			##lanzar una excepción
+			##Recibimos el mensaje de bienvenida del servidor junto con el NONCE que ya nos viene 
+			##tras hacer la primera conexión
 			message = socks.recv(2048) 
 			print message.split("-")[0] 
+			##GET al NONCE:
+			#En el mensaje de bienvenida nos manda el nonce también
 			nonce_aux = message.split("-")[1]
 			print "nonce => ",nonce_aux
 		else: 
 			message = sys.stdin.readline() 
 			message_aux = message+":"+nonce_aux
-			##GET al NONCE:
-			#server.send(peticion) 
-			#nonce = socks.recv(2048)
-			#print "Nonce => ",nonce
+
 			##Aquí debemos meter la función getMac(mensaje, key)
-			mac = getMac(message_aux, Key)
+			mac = getMac(str(message), str(Key))
 			print "El mac es: "+mac
 			print "La key es => ",Key
-			print "Mensaje que se cifra => ",message_aux
+			print "Mensaje que se cifra => ",message
+			
+			#Unimos el HMAC, el mensaje y el NONCE
 			unir = unirOSepararMacYMensaje(message, mac, nonce_aux, True)
 			print "La unión del mac, el mensaje y el nonce es: "+unir[0]
-			##nonce = getNonce()
-			##print "getNonce() => ",nonce
-			##Unimos el mensaje y el mac en un mismo texto con un carácter especial, ':'
-			#res_ret = mensaje + ":" + mac
+			
+			#Enviamos los datos al servidor
 			server.send(unir[0]) 
-			sys.stdout.write("<You>") 
-			sys.stdout.write(message) 
+			sys.stdout.write("Transacción realizada correctamente.\n") 
+			sys.stdout.write("Muchas gracias por usar VITPPI para mejorar su seguridad.\n") 
+			sys.stdout.write("Conexión terminada.\n")
+			mensaje_enviado = True
 			sys.stdout.flush() 
+	if mensaje_enviado:
+		break
 server.close()  
 
