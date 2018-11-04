@@ -50,8 +50,10 @@ mensajesCorrectosGlobal = 0
 contadorNonceErrorGlobal = 0	
 contadorMacErrorGlobal = 0
 errorAmbosGlobal = 0
-porcentajeIntegridadDiario[]
-tendenciaDiaria[]
+tendencia = 0
+porcentajeIntegridadDiario = []
+
+
 
 def clientthread(conn, addr): 
 
@@ -136,15 +138,32 @@ def clientthread(conn, addr):
 
 
 				
-				porcentajeIntegridadDiario.append()
+		
 				##Mensajes de despedida:
 				print "La conexión con [",addr[0],"] ha concluido."
-				#Llamamos a la función del kpi diario y mensual
-				creacionFicheroKPIDiario(totalMensajes,mensajesCorrectosGlobal,contadorNonceErrorGlobal,
-								contadorMacErrorGlobal,errorAmbosGlobal)
-				creacionFicheroKPIMensual(totalMensajes,mensajesCorrectosGlobal,contadorNonceErrorGlobal,
-								contadorMacErrorGlobal,errorAmbosGlobal)
+				
+				
+				print "Porcentaje de integridad de los mensajes: ",porcentaje
+				
+				#creamos hilos para automatizar las diferentes tareas
+				# t1 crea fichero de kpi cada 24 horas
+				# t2 calcula la tendencia mensual sumatorio de porcentajes diarios/30
+				# t3 cada 24h añade el porcentaje del dia a una lista global donde se almacenan todos los porcentajes
+				# t3 crea un fichero de kpi cada 30 días 
+				t1 = threading.Thread(name='creacionFicheroKPIDiario', target=creacionFicheroKPIDiario ,args =(totalMensajes,mensajesCorrectosGlobal,contadorNonceErrorGlobal,
+								contadorMacErrorGlobal,errorAmbosGlobal))
+				t2 = threading.Thread(name='tendenciaMensual', target=tendenciaMensual,args=(porcentajeIntegridadDiario))
 
+				t3 = threading.Thread(name='actualizarTendenciaDiaria', target=actualizarTendenciaDiaria ,
+						args=(porcentajeIntegridadDiario,porcentaje))
+
+				t4 = threading.Thread(name='creacionFicheroKPIMensual', target=creacionFicheroKPIMensual ,
+						args =(totalMensajes,mensajesCorrectosGlobal,contadorNonceErrorGlobal,
+								contadorMacErrorGlobal,errorAmbosGlobal,tendencia))
+				t1.start()
+				t2.start()
+				t3.start()
+				t4.start()
 
 			except: 
 				continue

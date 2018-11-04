@@ -7,6 +7,7 @@ import hmac
 import hashlib, binascii
 import os
 import time
+import threading
 
 def getMac(mensaje, key):
 
@@ -68,25 +69,12 @@ def unirOSepararMacYMensaje(mensaje, mac, nonce, unir):
     return res_ret
 
     #Crea el fichero con el número de mensajes enviados,errores, el porcentaje de integridad
-def creacionFicheroKPI(totalMensajes,mensajesCorrectos,contadorNonceError,
-								contadorMacError,errorAmbos):
-
-    division = float(mensajesCorrectos) / float(totalMensajes)
-    porcentaje = division * 100
-    file = open("./KPIDocument.txt", "w")
-    file.write("Nº de mensajes enviados en total: " + str(totalMensajes) + os.linesep)
-    file.write("Nº de mensajes con errores en la mac: " +str(contadorMacError)  + os.linesep)
-    file.write("Nº de mensajes con errores en el nonce: " + str(contadorNonceError) + os.linesep)
-    file.write("Nº de mensajes con errores en el nonce y en el mac: " + str(errorAmbos) + os.linesep)
-    file.write("Nº de mensajes enviados correctamente: " +str(mensajesCorrectos) + os.linesep)
-    file.write("Porcentaje de integridad de los mensajes: " +str(porcentaje) +  os.linesep)
-    file.close()
 
 def creacionFicheroKPIDiario(totalMensajes,mensajesCorrectos,contadorNonceError,
 								contadorMacError,errorAmbos):
     while True:
     
-        time.sleep(86400)    #cada dia crea este archivo                       
+        time.sleep(30)    #cada dia crea este archivo                       
         ahora = time.strftime("%c")
         division = float(mensajesCorrectos) / float(totalMensajes)
         porcentaje = division * 100
@@ -100,12 +88,13 @@ def creacionFicheroKPIDiario(totalMensajes,mensajesCorrectos,contadorNonceError,
         file.write("Nº de mensajes enviados correctamente: " +str(mensajesCorrectos) + os.linesep)
         file.write("Porcentaje de integridad de los mensajes: " +str(porcentaje) +  os.linesep)
         file.close()
+        
 
 def creacionFicheroKPIMensual(totalMensajes,mensajesCorrectos,contadorNonceError,
-								contadorMacError,errorAmbos):
+								contadorMacError,errorAmbos,tendencia):
     while True:
     
-        time.sleep(30)    #cada dia crea este archivo                       
+        time.sleep(386400*300)    #cada mes crea este archivo                       
         ahora = time.strftime("%c")
         division = float(mensajesCorrectos) / float(totalMensajes)
         porcentaje = division * 100
@@ -117,12 +106,30 @@ def creacionFicheroKPIMensual(totalMensajes,mensajesCorrectos,contadorNonceError
         file.write("Nº de mensajes con errores en el nonce: " + str(contadorNonceError) + os.linesep)
         file.write("Nº de mensajes con errores en el nonce y en el mac: " + str(errorAmbos) + os.linesep)
         file.write("Nº de mensajes enviados correctamente: " +str(mensajesCorrectos) + os.linesep)
-        file.write("Porcentaje de integridad de los mensajes(Mensual): " +str(porcentaje) +  os.linesep)
+        file.write("Porcentaje de integridad de los mensajes(Tendencia): " +str(tendencia) +  os.linesep)
         file.close()
 
 #TODO esto me queda de codigo
-def actualizarTendenciaDiaria():
+def actualizarTendenciaDiaria(lista,porcentaje):
 
-def actualizarTendenciaMensual():
+    while True:
+        time.sleep(86400) #un dia
+        lista.append(porcentaje)
+        print "Actualizacion Diaria realizada",porcentaje
+
+def tendenciaMensual(lista):
+    global tendencia
+    sumatorio = 0
+    res = 0
+    while True:
+        time.sleep(86400*30) #1mes
+        for porcentaje in range(len(lista) - 30,len(lista)):
+            sumatorio += lista[porcentaje]
+        tendencia = sumatorio/30.0
+        
+        print "Actualizacion Mensual realizada"
+
+        
+    
 
         
