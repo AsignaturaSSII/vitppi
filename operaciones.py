@@ -6,6 +6,7 @@ import random
 import hmac
 import hashlib, binascii
 import os
+import time
 
 def getMac(mensaje, key):
 
@@ -80,3 +81,48 @@ def creacionFicheroKPI(totalMensajes,mensajesCorrectos,contadorNonceError,
     file.write("Nº de mensajes enviados correctamente: " +str(mensajesCorrectos) + os.linesep)
     file.write("Porcentaje de integridad de los mensajes: " +str(porcentaje) +  os.linesep)
     file.close()
+
+def creacionFicheroKPIDiario(totalMensajes,mensajesCorrectos,contadorNonceError,
+								contadorMacError,errorAmbos):
+    while True:
+    
+        time.sleep(86400)    #cada dia crea este archivo                       
+        ahora = time.strftime("%c")
+        division = float(mensajesCorrectos) / float(totalMensajes)
+        porcentaje = division * 100
+
+        file = open("./KPIDocument"+ahora+".txt", "w")
+
+        file.write("Nº de mensajes enviados en total: " + str(totalMensajes) + os.linesep)
+        file.write("Nº de mensajes con errores en la mac: " +str(contadorMacError)  + os.linesep)
+        file.write("Nº de mensajes con errores en el nonce: " + str(contadorNonceError) + os.linesep)
+        file.write("Nº de mensajes con errores en el nonce y en el mac: " + str(errorAmbos) + os.linesep)
+        file.write("Nº de mensajes enviados correctamente: " +str(mensajesCorrectos) + os.linesep)
+        file.write("Porcentaje de integridad de los mensajes: " +str(porcentaje) +  os.linesep)
+        file.close()
+
+def creacionFicheroKPIMensual(totalMensajes,mensajesCorrectos,contadorNonceError,
+								contadorMacError,errorAmbos):
+    while True:
+    
+        time.sleep(30)    #cada dia crea este archivo                       
+        ahora = time.strftime("%c")
+        division = float(mensajesCorrectos) / float(totalMensajes)
+        porcentaje = division * 100
+
+        file = open("./KPIDocumentMensual"+ahora+".txt", "w")
+
+        file.write("Nº de mensajes enviados en total: " + str(totalMensajes) + os.linesep)
+        file.write("Nº de mensajes con errores en la mac: " +str(contadorMacError)  + os.linesep)
+        file.write("Nº de mensajes con errores en el nonce: " + str(contadorNonceError) + os.linesep)
+        file.write("Nº de mensajes con errores en el nonce y en el mac: " + str(errorAmbos) + os.linesep)
+        file.write("Nº de mensajes enviados correctamente: " +str(mensajesCorrectos) + os.linesep)
+        file.write("Porcentaje de integridad de los mensajes(Mensual): " +str(porcentaje) +  os.linesep)
+        file.close()
+
+#TODO esto me queda de codigo
+def actualizarTendenciaDiaria():
+
+def actualizarTendenciaMensual():
+
+        

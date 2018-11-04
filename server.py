@@ -44,11 +44,14 @@ list_of_clients = []
 
 list_nonce = {}
 
+#Definimos variables
 totalMensajes = 0
 mensajesCorrectosGlobal = 0
 contadorNonceErrorGlobal = 0	
 contadorMacErrorGlobal = 0
 errorAmbosGlobal = 0
+porcentajeIntegridadDiario[]
+tendenciaDiaria[]
 
 def clientthread(conn, addr): 
 
@@ -71,7 +74,6 @@ def clientthread(conn, addr):
 	global contadorMacErrorGlobal
 	global errorAmbosGlobal
 	global mensajesCorrectosGlobal
-
 	while True: 
 			try: 
 				message = conn.recv(2048)
@@ -129,14 +131,21 @@ def clientthread(conn, addr):
 				porcentaje = division*100
 				print "Porcentaje de integridad de los mensajes: ",porcentaje
 
-				creacionFicheroKPI(totalMensajes,mensajesCorrectosGlobal,contadorNonceErrorGlobal,
-								contadorMacErrorGlobal,errorAmbosGlobal)
+				#creacionFicheroKPI(totalMensajes,mensajesCorrectosGlobal,contadorNonceErrorGlobal,
+				#				contadorMacErrorGlobal,errorAmbosGlobal)
 
 
 				
-
+				porcentajeIntegridadDiario.append()
 				##Mensajes de despedida:
 				print "La conexión con [",addr[0],"] ha concluido."
+				#Llamamos a la función del kpi diario y mensual
+				creacionFicheroKPIDiario(totalMensajes,mensajesCorrectosGlobal,contadorNonceErrorGlobal,
+								contadorMacErrorGlobal,errorAmbosGlobal)
+				creacionFicheroKPIMensual(totalMensajes,mensajesCorrectosGlobal,contadorNonceErrorGlobal,
+								contadorMacErrorGlobal,errorAmbosGlobal)
+
+
 			except: 
 				continue
 
