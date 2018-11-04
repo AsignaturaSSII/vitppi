@@ -5,6 +5,7 @@ import time
 import random
 import hmac
 import hashlib, binascii
+import os
 
 def getMac(mensaje, key):
 
@@ -65,3 +66,17 @@ def unirOSepararMacYMensaje(mensaje, mac, nonce, unir):
         print "El resultado de unirOSepararMacYMensaje(mensaje, mac, False) es: Mensaje["+ res_ret[0] + "] y Mac["+ res_ret[1] +"]"
     return res_ret
 
+    #Crea el fichero con el número de mensajes enviados,errores, el porcentaje de integridad
+def creacionFicheroKPI(totalMensajes,mensajesCorrectos,contadorNonceError,
+								contadorMacError,errorAmbos):
+
+    division = float(mensajesCorrectos) / float(totalMensajes)
+    porcentaje = division * 100
+    file = open("./KPIDocument.txt", "w")
+    file.write("Nº de mensajes enviados en total: " + str(totalMensajes) + os.linesep)
+    file.write("Nº de mensajes con errores en la mac: " +str(contadorMacError)  + os.linesep)
+    file.write("Nº de mensajes con errores en el nonce: " + str(contadorNonceError) + os.linesep)
+    file.write("Nº de mensajes con errores en el nonce y en el mac: " + str(errorAmbos) + os.linesep)
+    file.write("Nº de mensajes enviados correctamente: " +str(mensajesCorrectos) + os.linesep)
+    file.write("Porcentaje de integridad de los mensajes: " +str(porcentaje) +  os.linesep)
+    file.close()

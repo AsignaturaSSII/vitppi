@@ -118,13 +118,19 @@ def clientthread(conn, addr):
 				contadorNonceErrorGlobal = contadorNonceErrorGlobal + contadorNonceError
 				contadorMacErrorGlobal = contadorMacErrorGlobal + contadorMacError
 				errorAmbosGlobal = errorAmbosGlobal + errorAmbos
-				print "-----------------Validadores------------------"
+				print "-----------------Indicadores------------------"
 				print "Total de mensajes enviados:",totalMensajes
 				print "Total de mensajes enviados correctamente:",mensajesCorrectosGlobal
 
 				print "Total de mensajes con error en el nonce:",contadorNonceErrorGlobal
 				print "Total de mensajes con error en la mac:",contadorMacErrorGlobal
 				print "Total de mensajes con error en la mac y en el nonce:",errorAmbosGlobal
+				division = float(mensajesCorrectosGlobal) / float(totalMensajes)
+				porcentaje = division*100
+				print "Porcentaje de integridad de los mensajes: ",porcentaje
+
+				creacionFicheroKPI(totalMensajes,mensajesCorrectosGlobal,contadorNonceErrorGlobal,
+								contadorMacErrorGlobal,errorAmbosGlobal)
 
 
 				
