@@ -44,6 +44,12 @@ list_of_clients = []
 
 list_nonce = {}
 
+totalMensajes = 0
+mensajesCorrectosGlobal = 0
+contadorNonceErrorGlobal = 0	
+contadorMacErrorGlobal = 0
+errorAmbosGlobal = 0
+
 def clientthread(conn, addr): 
 
 	# sends a message to the client whose user object is conn
@@ -53,6 +59,18 @@ def clientthread(conn, addr):
 	bienvenida = "Welcome to this chatroom!-"+str(nonce)
 	print "mensaje de bienvenida => ",bienvenida
 	conn.send(bienvenida) 
+	contadorNonceError = 0 
+	mensajesCorrectos = 0
+	contadorMacError = 0
+	macCorrecto = False
+	nonceCorrecto = False
+	mensajesEnviadosTotales = 0
+	errorAmbos = 0
+	global totalMensajes 
+	global contadorNonceErrorGlobal
+	global contadorMacErrorGlobal
+	global errorAmbosGlobal
+	global mensajesCorrectosGlobal
 
 	while True: 
 			try: 
@@ -63,6 +81,7 @@ def clientthread(conn, addr):
 				#Realizamos la comprobación del NONCE
 				if int(separar[2]) == int(list_nonce.get(addr[0])):
 					print "El nonce es correcto"
+					nonceCorrecto = True
 				else: 
 					print "El nonce es incorrecto"
 					##CARLOS: Aquí debes tener en cuenta de coger un valor para saber que el nonce no es correcto
@@ -79,9 +98,36 @@ def clientthread(conn, addr):
 				##Damos el veredicto de la mac
 				if(mac == separar[1]):
 					print "Las macs son iguales"
+					macCorrecto = True
 				else:
 					print "Las macs son diferentes"
 					##CARLOS: Aquí ocurre parecido a lo del NONCE
+
+				##Actualizar indicadoress de verificación
+				##mensaje correcto
+				if((macCorrecto == True) and (nonceCorrecto == True)):
+					mensajesCorrectos += 1
+				elif((macCorrecto == True) and (nonceCorrecto == False)):
+					contadorNonceError += 1
+				elif((macCorrecto == False ) and (nonceCorrecto == True)):
+					contadorMacError += 1
+				elif((macCorrecto == False) and (nonceCorrecto == False)):
+					errorAmbos += 1
+				totalMensajes = totalMensajes + mensajesCorrectos + contadorNonceError + contadorMacError + errorAmbos
+				mensajesCorrectosGlobal = mensajesCorrectosGlobal + mensajesCorrectos
+				contadorNonceErrorGlobal = contadorNonceErrorGlobal + contadorNonceError
+				contadorMacErrorGlobal = contadorMacErrorGlobal + contadorMacError
+				errorAmbosGlobal = errorAmbosGlobal + errorAmbos
+				print "-----------------Validadores------------------"
+				print "Total de mensajes enviados:",totalMensajes
+				print "Total de mensajes enviados correctamente:",mensajesCorrectosGlobal
+
+				print "Total de mensajes con error en el nonce:",contadorNonceErrorGlobal
+				print "Total de mensajes con error en la mac:",contadorMacErrorGlobal
+				print "Total de mensajes con error en la mac y en el nonce:",errorAmbosGlobal
+
+
+				
 
 				##Mensajes de despedida:
 				print "La conexión con [",addr[0],"] ha concluido."
