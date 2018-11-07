@@ -74,7 +74,7 @@ def creacionFicheroKPIDiario(totalMensajes,mensajesCorrectos,contadorNonceError,
 								contadorMacError,errorAmbos):
     while True:
     
-        time.sleep(386400)    #cada dia crea este archivo                       
+        time.sleep(30)    #cada dia crea este archivo                       
         ahora = time.strftime("%c")
         division = float(mensajesCorrectos) / float(totalMensajes)
         porcentaje = division * 100
@@ -94,7 +94,8 @@ def creacionFicheroKPIMensual(totalMensajes,mensajesCorrectos,contadorNonceError
 								contadorMacError,errorAmbos,tendencia):
     while True:
     
-        time.sleep(386400*300)    #cada mes crea este archivo                       
+        time.sleep(400)    #cada mes crea este archivo
+        print "-----------------La tendencia para mensual es:----------------",tendencia                      
         ahora = time.strftime("%c")
         division = float(mensajesCorrectos) / float(totalMensajes)
         porcentaje = division * 100
@@ -108,12 +109,13 @@ def creacionFicheroKPIMensual(totalMensajes,mensajesCorrectos,contadorNonceError
         file.write("Nº de mensajes enviados correctamente: " +str(mensajesCorrectos) + os.linesep)
         file.write("Porcentaje de integridad de los mensajes(Tendencia): " +str(tendencia) +  os.linesep)
         file.close()
+        print "------------------------------KPI MENSUAL CREADO-----------------"
 
 #TODO esto me queda de codigo
 def actualizarTendenciaDiaria(lista,porcentaje):
 
     while True:
-        time.sleep(86400) #un dia
+        time.sleep(10) #un dia,para la prueba actualizamos cada 10 segundos 
         lista.append(porcentaje)
         print "Actualizacion Diaria realizada",porcentaje
 
@@ -121,7 +123,7 @@ def tendenciaMensual(lista,tendencia):
     sumatorio = 0
     res = 0
     while True:
-        time.sleep(86400*30) #1mes
+        time.sleep(10*30 ) #1mes
         for porcentaje in range(len(lista) - 30,len(lista)):
             sumatorio += lista[porcentaje]
         tendencia = sumatorio/30.0

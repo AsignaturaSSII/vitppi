@@ -102,6 +102,7 @@ def clientthread(conn, addr):
 
 				##Comparamos la mac
 				##Damos el veredicto de la mac
+				#para emular el error de ambos , forzamos error en la mac en esta condicion
 				if(mac == separar[1]):
 					print "Las macs son iguales"
 					macCorrecto = True
@@ -152,6 +153,7 @@ def clientthread(conn, addr):
 				# t2 calcula la tendencia mensual sumatorio de porcentajes diarios/30
 				# t3 cada 24h añade el porcentaje del dia a una lista global donde se almacenan todos los porcentajes
 				# t3 crea un fichero de kpi cada 30 días 
+				
 				t1 = threading.Thread(name='creacionFicheroKPIDiario', target=creacionFicheroKPIDiario ,args =(totalMensajes,mensajesCorrectosGlobal,contadorNonceErrorGlobal,
 								contadorMacErrorGlobal,errorAmbosGlobal))
 				t2 = threading.Thread(name='tendenciaMensual', target=tendenciaMensual,args=(porcentajeIntegridadDiario,tendencia))

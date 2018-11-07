@@ -1,0 +1,6 @@
+Nº de mensajes enviados en total: 2
+Nº de mensajes con errores en la mac: 0
+Nº de mensajes con errores en el nonce: 0
+Nº de mensajes con errores en el nonce y en el mac: 0
+Nº de mensajes enviados correctamente: 2
+Porcentaje de integridad de los mensajes: 100.0
