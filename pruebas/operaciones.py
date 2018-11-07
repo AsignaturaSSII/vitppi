@@ -111,7 +111,6 @@ def creacionFicheroKPIMensual(totalMensajes,mensajesCorrectos,contadorNonceError
         file.close()
         print "------------------------------KPI MENSUAL CREADO-----------------"
 
-#TODO esto me queda de codigo
 def actualizarTendenciaDiaria(lista,porcentaje):
 
     while True:
