@@ -6,7 +6,7 @@ Para usar el chat de mensajes abre un terminal, busca la ruta donde estén los a
 ```
 python server.py dirección_ip puerto key
 
-ex: python.py 10.101.10.11 8180 "mi_key"
+ex: python server.py 10.101.10.11 8180 "mi_key"
 ```
 
 ## Cliente
